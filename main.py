@@ -16,19 +16,20 @@ class entity:
         dx = other.pos.x - self.pos.x
         dy = other.pos.y - self.pos.y
 
+        # Normalize
+        m = (dx ** 2 + dy ** 2) ** 0.5
+        n = vector(dx / m, dy / m)
+
         # Force
-        f = vector(other.mass / dx, other.mass / dy)
+        f = 1/10 * vector(other.mass / n.x, other.mass / n.y)
 
         self.apply_force(f)
 
 
     def update(self):
         self.vel += self.acc
-        # self.pos += self.vel
-        self.acc *= 0
-
-    def pos_up(self):
         self.pos += self.vel
+        self.acc *= 0
 
     def draw(self, c, r):
         shape = p.shapes.Circle(self.pos.x, self.pos.y, r)
@@ -43,14 +44,11 @@ def update(t):
     e1.update()
     e2.update()
 
-    e1.pos_up()
-    e2.pos_up()
-
     e1.apply_gravity(e2)
-    e1.apply_force(vector(0.01, 0.0000751))
+    # e1.apply_force(vector(0.01, 0.0000751))
 
     e2.apply_gravity(e1)
-    e2.apply_force(vector(-0.01, -0.0000751))
+    # e2.apply_force(vector(-0.01, -0.0000751))
 
 @win.event
 def on_draw():
