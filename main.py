@@ -16,12 +16,9 @@ class entity:
         dx = other.pos.x - self.pos.x
         dy = other.pos.y - self.pos.y
 
-        # Normalize
-        m = (dx ** 2 + dy ** 2) ** 0.5
-        n = vector(dx / m, dy / m)
-
         # Force
-        f = 1/10 * vector(other.mass / n.x, other.mass / n.y)
+        mg = dx ** 2 + dy ** 2
+        f = 1/1000 * other.mass * vector(mg / dx, mg / dy)
 
         self.apply_force(f)
 
@@ -39,16 +36,16 @@ class entity:
 win = p.window.Window(width=500, height=500)
 e1 = entity(1, 200, 200)
 e2 = entity(1, 300, 300)
+e1.apply_force(vector(0.01, 0.0000751))
+# e2.apply_force(vector(-0.01, -0.0000751))
 
 def update(t):
     e1.update()
     e2.update()
 
     e1.apply_gravity(e2)
-    # e1.apply_force(vector(0.01, 0.0000751))
 
     e2.apply_gravity(e1)
-    # e2.apply_force(vector(-0.01, -0.0000751))
 
 @win.event
 def on_draw():
@@ -56,6 +53,6 @@ def on_draw():
     e1.draw((217, 32, 134), 25)
     e2.draw((31, 103, 231), 25)
 
-p.clock.schedule_interval(update, 1/2048)
+p.clock.schedule_interval(update, 1/256)
 p.app.run()
 
